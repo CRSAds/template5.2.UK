@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const wrapper = document.createElement('div');
   wrapper.id = 'sponsor-progress-wrapper';
   wrapper.innerHTML = `
-    <div id="sponsor-progress-text">Bijna klaar, nog enkele vragen</div>
+    <div id="sponsor-progress-text">Almost done, some final questions</div>
     <div id="sponsor-progress-container">
       <div id="sponsor-progress-fill"></div>
     </div>
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateProgress(index) {
     const percent = Math.round(((index + 1) / total) * 100);
     fill.style.width = `${percent}%`;
-    label.textContent = `Bijna klaar, nog enkele vragen ${index + 1}/${total}`;
+    label.textContent = `Almost done, some final questions ${index + 1}/${total}`;
   }
 
   const observer = new MutationObserver(() => {
