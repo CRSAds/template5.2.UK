@@ -1,163 +1,72 @@
 const sponsorCampaigns = {
-  "campaign-mycollections": {
-    cid: 1882,
+  "campaign-ndcs": {
+    cid: 4357,
     sid: 34,
     requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_campaign-mycollections",
+    coregAnswerKey: "coreg_answer_campaign-ndcs",
     hasCoregFlow: false
   },
-  "campaign-unitedconsumers-man": {
-    cid: 2905,
+  "campaign-three": {
+    cid: 3103,
     sid: 34,
     requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_campaign-unitedconsumers-man",
+    coregAnswerKey: "coreg_answer_campaign-three",
     hasCoregFlow: false
   },
-  "campaign-unitedconsumers-vrouw": {
-    cid: 2906,
+  "campaign-scottishpower": {
+    cid: 3334,
     sid: 34,
     requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_campaign-unitedconsumers-vrouw",
+    coregAnswerKey: "coreg_answer_campaign-scottishpower",
     hasCoregFlow: false
   },
-    "campaign-vastelasten": {
-    cid: 4951,
+  "campaign-goodlifeplus": {
+    cid: 3796,
     sid: 34,
     requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_campaign-vastelasten",
+    coregAnswerKey: "coreg_answer_campaign-goodlifeplus",
     hasCoregFlow: false
   },
-  "campaign-kiosk": {
-    cid: 3499,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-kiosk",
-    hasCoregFlow: false
-  },
-  "campaign-ad": {
-    cid: 3532,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-ad",
-    hasCoregFlow: false
-  },
-  "campaign-volkskrant": {
-    cid: 3534,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-volkskrant",
-    hasCoregFlow: false
-  },
-  "campaign-parool": {
-    cid: 4192,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-parool",
-    hasCoregFlow: false
-  },
-  "campaign-trouw": {
-    cid: 4193,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-trouw",
-    hasCoregFlow: false
-  },
-  "campaign-bndestem": {
-    cid: 4200,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-bndestem",
-    hasCoregFlow: false
-  },
-  "campaign-brabantsdagblad": {
-    cid: 4198,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-brabantsdagblad",
-    hasCoregFlow: false
-  },
-  "campaign-degelderlander": {
-    cid: 4196,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-degelderlander",
-    hasCoregFlow: false
-  },
-  "campaign-destentor": {
-    cid: 4199,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-destentor",
-    hasCoregFlow: false
-  },
-  "campaign-eindhovensdagblad": {
-    cid: 4197,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-eindhovensdagblad",
-    hasCoregFlow: false
-  },
-  "campaign-pzc": {
-    cid: 4194,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-pzc",
-    hasCoregFlow: false
-  },
-  "campaign-tubantia": {
-    cid: 4195,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-tubantia",
-    hasCoregFlow: false
-  },
-  "campaign-consubeheer": {
-    cid: 4720,
+  "campaign-freestuff": {
+    cid: 4234,
     sid: 34,
     requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_campaign-consubeheer",
+    coregAnswerKey: "coreg_answer_campaign-freestuff",
     hasCoregFlow: false
   },
-    "campaign-engie": {
-    cid: 4985,
+  "campaign-tails": {
+    cid: 4159,
     sid: 34,
     requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_engie",
-    hasCoregFlow: false
-  },
-  "campaign-generationzero": {
-    cid: 4555,
-    sid: 34,
-    requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_campaign-generationzero",
+    coregAnswerKey: "coreg_answer_campaign-tails",
     hasCoregFlow: true
   },
-  "campaign-hotelspecials": {
-    cid: 4621,
-    sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-hotelspecials",
-    hasCoregFlow: false
-  },
-  "campaign-raadselgids": {
-    cid: 3697,
+  "campaign-onefamily": {
+    cid: 3302,
     sid: 34,
     requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_campaign-raadselgids",
+    coregAnswerKey: "coreg_answer_campaign-onefamily",
     hasCoregFlow: false
   },
-  "campaign-tuinmanieren": {
-    cid: 4852,
+  "campaign-firstprizelottos": {
+    cid: 3829,
     sid: 34,
-    requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-tuinmanieren",
-    hasCoregFlow: true // deze heeft multi-step flow
+    requiresLongForm: true,
+    coregAnswerKey: "coreg_answer_campaign-firstprizelottos",
+    hasCoregFlow: false
   },
-  "campaign-leadsnl": {
-    cid: 925,
+  "campaign-lifeinsurance": {
+    cid: 4489,
+    sid: 34,
+    requiresLongForm: true,
+    coregAnswerKey: "coreg_answer_campaign-lifeinsurance",
+    hasCoregFlow: true
+  },
+  "campaign-leadsuk": {
+    cid: 1123,
     sid: 34,
     requiresLongForm: false,
-    coregAnswerKey: "coreg_answer_campaign-leadsnl",
+    coregAnswerKey: "coreg_answer_campaign-leadsuk",
     hasCoregFlow: false
   }
 };
