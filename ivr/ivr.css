@@ -1,0 +1,90 @@
+/* Fallback "show pin" button (optioneel laten staan) */
+.mobile-call-btn {
+  background-color: #fe882b;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 90px;
+  font-weight: bold;
+  font-size: 18px;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  margin: 24px auto 16px;
+  cursor: pointer;
+}
+
+.ivr-instructie {
+  margin-bottom: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* Spinner container */
+.pin-spinner {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px auto;
+  padding: 16px 24px;
+  background: #324048;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+/* EÃ©n cijfervakje */
+.digit {
+  width: 48px;
+  height: 64px;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  position: relative;
+}
+
+.digit-inner {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.6s ease-out;
+  font-size: 48px;
+  font-weight: bold;
+  color: #324048;
+  height: 640px; /* 10 cijfers Ã— 64px */
+  line-height: 64px;
+  text-align: center;
+}
+
+.call-now-button {
+  display: inline-block;
+  background-color: #fe882b;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 999px;
+  text-decoration: none;
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 280px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transition: background-color 0.2s ease;
+}
+
+.call-now-button:hover {
+  background-color: #e3721c;
+}
+
+#pin-container-mobile,
+#pin-container-desktop {
+  display: block !important;
+  min-height: 100px;
+  padding: 12px 0;
+}
+
+.pin-spinner {
+  opacity: 1;
+  visibility: visible;
+}

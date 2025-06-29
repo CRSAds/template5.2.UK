@@ -1,0 +1,16 @@
+/* Sovendus iframe centeren + responsive */
+#sovendus-container-1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0;
+  width: 100%;
+}
+
+#sovendus-iframe {
+  display: block;
+  width: 320px;
+  height: 50px;
+  border: none;
+  margin: 0 auto;
+}

@@ -1,0 +1,188 @@
+body {
+  overflow-x: hidden;
+}
+
+.game-inner {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 16px 0 16px;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+}
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.progress-fill {
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(to right, #e040fb, #ab47bc);
+  border-radius: 6px;
+  transition: width linear;
+}
+
+.progress-timer {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
+  gap: 12px;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .game-board {
+    grid-template-columns: repeat(4, 150px);
+  }
+}
+
+.card {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: transparent;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+  cursor: pointer;
+  position: relative;
+  border-radius: 12px;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  will-change: transform;
+  perspective: 1000px;
+}
+
+@media (min-width: 768px) {
+  .card {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+.card.flip {
+  transform: rotateY(180deg);
+}
+
+.card .front,
+.card .back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card .front {
+  background-color: #e0f7fa;
+}
+
+.card .back {
+  background-color: #001f3f;
+  transform: rotateY(180deg);
+}
+
+.card img {
+  width: 70%;
+  height: auto;
+  object-fit: contain;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.overlay.show {
+  display: flex;
+}
+
+.overlay-content {
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 20;
+}
+
+.overlay-content h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #4b0082;
+}
+
+.cta-button {
+  background-color: #fe882b;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.confetti-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: hsl(var(--hue), 70%, 60%);
+  animation: confetti-fall 2.5s ease-out forwards;
+  opacity: 0.9;
+  border-radius: 50%;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) rotate(360deg) scale(0.8);
+    opacity: 0;
+  }
+}

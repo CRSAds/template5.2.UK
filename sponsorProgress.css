@@ -1,0 +1,63 @@
+/* Volledige wrapper (tekst + bar) */
+#sponsor-progress-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  padding: 16px 0;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  z-index: 9999;
+  display: none;
+  pointer-events: none;
+}
+
+/* Tekst boven de balk */
+#sponsor-progress-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 12px;
+  pointer-events: none;
+}
+
+/* Container van de voortgangsbalk */
+#sponsor-progress-container {
+  background: #fff3e0;
+  border-radius: 16px;
+  width: 80%;
+  max-width: 480px;
+  margin: 0 auto;
+  height: 12px;
+  overflow: visible;
+  position: relative;
+  pointer-events: none;
+}
+
+/* Gevulde balk */
+#sponsor-progress-fill {
+  background: linear-gradient(to right, #ffb300, #f57c00);
+  height: 100%;
+  width: 0%;
+  border-radius: 16px;
+  transition: width 0.4s ease-in-out;
+  position: relative;
+  pointer-events: none;
+}
+
+/* Zon als marker (buiten de balk, zwevend) */
+#sponsor-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+  width: 32px;
+  height: 32px;
+  background-image: url('./assets/sun.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+}
