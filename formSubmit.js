@@ -5,7 +5,7 @@ import sponsorCampaigns from './sponsorCampaigns.js';
 window.sponsorCampaigns = sponsorCampaigns;
 window.submittedCampaigns = window.submittedCampaigns || new Set(); // aangepast
 
-const sponsorOptinText = `spaaractief_ja directdeals_ja yuccies_ja qliqs_ja outspot_ja onlineacties_ja aownu_ja betervrouw_ja ipay_ja cashbackkorting_ja cashhier_ja myclics_ja seniorenvoordeelpas_ja favorieteacties_ja spaaronline_ja cashbackacties_ja woolsocks_ja dealdonkey_ja centmail_ja`;
+const sponsorOptinUK = `crs_ja wowcher_ja superescapes_ja goodlifeplus_ja gogroopie_ja firstprizelottos_ja discountexperts_ja outspot_ja adviceglobal_ja scottishpower_ja prizereactor_ja utilita_ja Hutchison_ja britishgas_ja skyuk_ja yourlottoservice_ja onefamily_ja auramediagroup_ja secureforlife_ja protectyourfamily_ja`;
 
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('accept-sponsors-btn');
