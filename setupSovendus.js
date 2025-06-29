@@ -26,7 +26,7 @@ export default function setupSovendus() {
     loadingDiv.id = 'sovendus-loading';
     loadingDiv.style.textAlign = 'center';
     loadingDiv.style.padding = '16px';
-    loadingDiv.innerHTML = `<p style="font-size: 16px;">Even geduld… jouw voordeel wordt geladen!</p>`;
+    loadingDiv.innerHTML = `<p style="font-size: 16px;">Please wait… your reward is loading!</p>`;
     container.parentNode.insertBefore(loadingDiv, container);
   }
 
@@ -49,7 +49,7 @@ export default function setupSovendus() {
   // Stap 4: Zet global iframe configuratie
   window.sovIframes = window.sovIframes || [];
   window.sovIframes.push({
-    trafficSourceNumber: '5592',
+    trafficSourceNumber: '7675',
     trafficMediumNumber: '1',
     sessionId: t_id,
     timestamp: timestamp,
