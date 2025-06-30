@@ -119,7 +119,7 @@ export async function fetchLead(payload) {
   }
 
   try {
-    const response = await fetch('https://template5-2-uk.vercel.app/api/submit', {      
+  const response = await fetch('/api/submit', { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
