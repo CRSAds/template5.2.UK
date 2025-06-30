@@ -1,5 +1,3 @@
-// api/submit.js
-
 let recentIps = new Map();
 
 export default async function handler(req, res) {
@@ -8,6 +6,7 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Cache-Control');
   
   if (req.method === 'OPTIONS') return res.status(200).end();
+
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
@@ -24,10 +23,10 @@ export default async function handler(req, res) {
       dob_year,
       f_5_dob,
       email,
-      postcode,
-      address3,
-      towncity,
-      phone1,
+      f_6_address1,
+      f_9_towncity,
+      f_11_postcode,
+      f_12_phone1,
       t_id,
       f_1322_transaction_id,
       f_2014_coreg_answer,
@@ -38,9 +37,11 @@ export default async function handler(req, res) {
       f_2047_EM_CO_sponsors
     } = req.body;
 
-    // 📦 Debug: check de rauwe binnenkomende waarden
-    console.log('✉️ Gecontroleerde velden vóór encoding:', {
-      address3, towncity, postcode, phone1
+    console.log('📦 Long form data ontvangen (f_velden):', {
+      f_6_address1,
+      f_9_towncity,
+      f_11_postcode,
+      f_12_phone1
     });
 
     if (!cid || !sid) {
@@ -79,11 +80,11 @@ export default async function handler(req, res) {
       f_4_lastname: (lastname || '').toString().trim(),
       f_1_email: (email || '').toString().trim(),
       f_5_dob: (f_5_dob || '').toString().trim(),
-      f_6_address1: (address3 || '').toString().trim(),
-      f_7_address2: '', // optioneel leeg
-      f_9_towncity: (towncity || '').toString().trim(),
-      f_11_postcode: (postcode || '').toString().trim(),
-      f_12_phone1: (phone1 || '').toString().trim(),
+      f_6_address1: (f_6_address1 || '').toString().trim(),
+      f_7_address2: '',
+      f_9_towncity: (f_9_towncity || '').toString().trim(),
+      f_11_postcode: (f_11_postcode || '').toString().trim(),
+      f_12_phone1: (f_12_phone1 || '').toString().trim(),
       f_17_ipaddress: ipaddress,
       f_55_optindate: optindate,
       f_1322_transaction_id: safeTId,
@@ -93,14 +94,6 @@ export default async function handler(req, res) {
       f_1685_aff_id: (f_1685_aff_id || '').toString().trim(),
       f_1687_offer_id: (f_1687_offer_id || '').toString().trim(),
       f_2047_EM_CO_sponsors: (f_2047_EM_CO_sponsors || '').toString().trim()
-    });
-
-    // 🔍 Extra controle op param-waarden
-    console.log('🔍 Geëxporteerde params naar Databowl:', {
-      f_6_address1: params.get('f_6_address1'),
-      f_9_towncity: params.get('f_9_towncity'),
-      f_11_postcode: params.get('f_11_postcode'),
-      f_12_phone1: params.get('f_12_phone1')
     });
 
     const response = await fetch('https://crsadvertising.databowl.com/api/v1/lead', {
@@ -113,11 +106,11 @@ export default async function handler(req, res) {
     });
 
     const result = await response.json();
-    console.log('✅ Antwoord van Databowl:', result);
+    console.log('✅ Databowl antwoord:', result);
 
     return res.status(200).json({ success: true, result });
   } catch (error) {
-    console.error('❌ Fout tijdens verzenden naar Databowl:', error);
-    return res.status(500).json({ success: false, message: 'Interne fout' });
+    console.error('❌ Fout bij verzenden naar Databowl:', error);
+    return res.status(500).json({ success: false, message: 'Interne fout bij verzenden' });
   }
 }
