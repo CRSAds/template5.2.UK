@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('accept-sponsors-btn');
   if (btn) {
     btn.addEventListener('click', () => {
-      sessionStorage.setItem('sponsor_optin', sponsorOptinTextUK);
+      sessionStorage.setItem('sponsor_optin', sponsorOptinUK);
     });
   }
 
