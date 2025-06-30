@@ -24,8 +24,8 @@ export function handleFooterDisplay() {
     // Onbekende status = blokkeren
     document.body.innerHTML = `
       <div style="padding:40px; text-align:center; font-family:sans-serif;">
-        <h1>Pagina niet bereikbaar</h1>
-        <p>Helaas, we kunnen deze pagina niet vinden.</p>
+          <h1>Page not accessible</h1>
+          <p>Sorry, we can't display this page.</p>
       </div>
     `;
     document.body.style.backgroundColor = "#f8d7da";
