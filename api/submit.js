@@ -89,9 +89,10 @@ export default async function handler(req, res) {
       f_4_lastname: lastname || '',
       f_1_email: email || '',
       f_5_dob: f_5_dob || '',
-      f_11_postcode: postcode || '',
-      f_8_address3: address3 || '',
+      f_6_address1: address3 || '',     // ← hier zat je mis
+      f_7_address2: '',                 // ← UK gebruikt dit niet, maar stuur leeg mee
       f_9_towncity: towncity || '',
+      f_11_postcode: postcode || '',
       f_12_phone1: phone1 || '',
       f_17_ipaddress: ipaddress,
       f_55_optindate: optindate,
