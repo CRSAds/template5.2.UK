@@ -48,7 +48,7 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     ? `${dob_year.padStart(4, '0')}-${dob_month.padStart(2, '0')}-${dob_day.padStart(2, '0')}`
     : '';
 
-  const isShortForm = campaign.cid === 1123;
+  const isShortForm = campaign.cid === 925;
 
   const payload = {
     cid: campaign.cid,
@@ -69,18 +69,32 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     f_1687_offer_id: offer_id
   };
 
-if (!isShortForm) {
-    payload.address3 = sessionStorage.getItem('address3') || '';
-    payload.towncity = sessionStorage.getItem('towncity') || '';
-    payload.phone1 = sessionStorage.getItem('phone1') || '';
-    payload.postcode = sessionStorage.getItem('postcode') || '';
-}
+  if (!isShortForm) {
+    console.log("📦 Long form data uit sessionStorage:", {
+      address3: sessionStorage.getItem('address3'),
+      towncity: sessionStorage.getItem('towncity'),
+      postcode: sessionStorage.getItem('postcode'),
+      phone1: sessionStorage.getItem('phone1')
+    });
+
+    payload.f_6_address1 = sessionStorage.getItem('address3') || '';
+    payload.f_9_towncity = sessionStorage.getItem('towncity') || '';
+    payload.f_11_postcode = sessionStorage.getItem('postcode') || '';
+    payload.f_12_phone1 = sessionStorage.getItem('phone1') || '';
+
+    console.log("📦 Long form data in payload:", {
+      f_6_address1: payload.f_6_address1,
+      f_9_towncity: payload.f_9_towncity,
+      f_11_postcode: payload.f_11_postcode,
+      f_12_phone1: payload.f_12_phone1
+    });
+  }
 
   if (campaign.coregAnswerKey) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
   }
 
-  if (campaign.cid === 1123 && options.includeSponsors) {
+  if (campaign.cid === 925 && options.includeSponsors) {
     const optin = sessionStorage.getItem('sponsor_optin');
     if (optin) {
       payload.f_2047_EM_CO_sponsors = optin;
@@ -159,10 +173,19 @@ export function setupFormSubmit() {
     const form = section.querySelector('form');
     if (!validateLongForm(form)) return;
 
-['postcode', 'address3', 'towncity', 'phone1'].forEach(id => {
-  const val = document.getElementById(id)?.value.trim();
-  if (val) sessionStorage.setItem(id, val);
-});
+    // Mapping van velden naar de juiste namen
+    const fieldMapping = {
+      postcode: 'postcode',
+      address3: 'address3',
+      towncity: 'towncity',
+      phone1: 'phone1'
+    };
+
+    // Opslaan van de velden met de juiste namen
+    Object.entries(fieldMapping).forEach(([id, storageKey]) => {
+      const val = document.getElementById(id)?.value.trim();
+      if (val) sessionStorage.setItem(storageKey, val);
+    });
 
     if (Array.isArray(window.longFormCampaigns)) {
       window.longFormCampaigns.forEach(campaign => {
