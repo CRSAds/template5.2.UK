@@ -69,13 +69,12 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     f_1687_offer_id: offer_id
   };
 
-  if (!isShortForm) {
-    payload.postcode = sessionStorage.getItem('postcode') || '';
-    payload.straat = sessionStorage.getItem('straat') || '';
-    payload.huisnummer = sessionStorage.getItem('huisnummer') || '';
-    payload.woonplaats = sessionStorage.getItem('woonplaats') || '';
-    payload.telefoon = sessionStorage.getItem('telefoon') || '';
-  }
+if (!isShortForm) {
+  payload.postcode = sessionStorage.getItem('postcode') || '';
+  payload.address3 = sessionStorage.getItem('address3') || '';
+  payload.towncity = sessionStorage.getItem('towncity') || '';
+  payload.phone1 = sessionStorage.getItem('phone1') || '';
+}
 
   if (campaign.coregAnswerKey) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
@@ -132,19 +131,19 @@ export function validateLongForm(form) {
   let valid = true;
   let messages = [];
 
-  const fields = ['postcode', 'straat', 'huisnummer', 'woonplaats', 'telefoon'];
-  const maxPhone = 11;
+  const postcode = form.querySelector('#postcode')?.value.trim();
+  const address3 = form.querySelector('#address3')?.value.trim();
+  const towncity = form.querySelector('#towncity')?.value.trim();
+  const phone1 = form.querySelector('#phone1')?.value.trim();
 
-  fields.forEach(id => {
-    const val = form.querySelector(`#${id}`)?.value.trim();
-    if (!val) messages.push(id);
-    if (id === 'telefoon' && val && val.length > maxPhone) {
-      messages.push('Telefoonnummer mag max. 11 tekens bevatten');
-    }
-  });
+  if (!address3) messages.push('Enter your address');
+  if (!towncity) messages.push('Enter your town or city');
+  if (!postcode) messages.push('Enter postcode');
+  if (!phone1) messages.push('Enter phone number');
+  else if (phone1.length > 11) messages.push('Phone number can be max. 11 digits');
 
   if (messages.length > 0) {
-    alert('Vul aub alle velden correct in:\n' + messages.join('\n'));
+    alert('Please complete all fields correctly:\n' + messages.join('\n'));
     valid = false;
   }
 
@@ -160,10 +159,10 @@ export function setupFormSubmit() {
     const form = section.querySelector('form');
     if (!validateLongForm(form)) return;
 
-    ['postcode', 'straat', 'huisnummer', 'woonplaats', 'telefoon'].forEach(id => {
-      const val = document.getElementById(id)?.value.trim();
-      if (val) sessionStorage.setItem(id, val);
-    });
+['postcode', 'address3', 'towncity', 'phone1'].forEach(id => {
+  const val = document.getElementById(id)?.value.trim();
+  if (val) sessionStorage.setItem(id, val);
+});
 
     if (Array.isArray(window.longFormCampaigns)) {
       window.longFormCampaigns.forEach(campaign => {
