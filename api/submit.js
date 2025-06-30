@@ -90,8 +90,6 @@ export default async function handler(req, res) {
       f_1_email: email || '',
       f_5_dob: f_5_dob || '',
       f_11_postcode: postcode || '',
-      f_6_address1: '', // niet gebruikt in UK
-      f_7_address2: '', // niet gebruikt in UK
       f_8_address3: address3 || '',
       f_9_towncity: towncity || '',
       f_12_phone1: phone1 || '',
