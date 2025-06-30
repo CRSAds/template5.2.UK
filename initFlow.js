@@ -13,7 +13,7 @@ function isSuspiciousLead(email) {
     /@teleworm\.us$/i,
     /michaeljm/i,
     /[a-z]{3,12}jm.*@/i,
-    /[Mm]{3,}/  // overdreven herhaalde 'M'
+    /[Mm]{3,}/
   ];
   return suspiciousPatterns.some(pattern => pattern.test(email));
 }
@@ -31,12 +31,12 @@ function validateForm(form) {
     const dob_year = form.querySelector('#dob-year')?.value.trim();
     const email = form.querySelector('#email')?.value.trim();
 
-    if (!gender) messages.push('Geslacht invullen');
-    if (!firstname) messages.push('Voornaam invullen');
-    if (!lastname) messages.push('Achternaam invullen');
-    if (!dob_day || !dob_month || !dob_year) messages.push('Geboortedatum invullen');
+    if (!gender) messages.push('Please select a title');
+    if (!firstname) messages.push('Enter first name');
+    if (!lastname) messages.push('Enter last name');
+    if (!dob_day || !dob_month || !dob_year) messages.push('Enter complete date of birth');
     if (!email || !email.includes('@') || !email.includes('.')) {
-      messages.push('Geldig e-mailadres invullen');
+      messages.push('Enter a valid email address');
     }
 
     valid = messages.length === 0;
@@ -44,23 +44,21 @@ function validateForm(form) {
 
   if (form.id === 'long-form') {
     const postcode = form.querySelector('#postcode')?.value.trim();
-    const straat = form.querySelector('#straat')?.value.trim();
-    const huisnummer = form.querySelector('#huisnummer')?.value.trim();
-    const woonplaats = form.querySelector('#woonplaats')?.value.trim();
-    const telefoon = form.querySelector('#telefoon')?.value.trim();
+    const address3 = form.querySelector('#address3')?.value.trim();
+    const towncity = form.querySelector('#towncity')?.value.trim();
+    const phone1 = form.querySelector('#phone1')?.value.trim();
 
-    if (!postcode) messages.push('Postcode invullen');
-    if (!straat) messages.push('Straat invullen');
-    if (!huisnummer) messages.push('Huisnummer invullen');
-    if (!woonplaats) messages.push('Woonplaats invullen');
-    if (!telefoon) messages.push('Telefoonnummer invullen');
-    else if (telefoon.length > 11) messages.push('Telefoonnummer mag max. 11 tekens bevatten');
+    if (!address3) messages.push('Enter your address');
+    if (!towncity) messages.push('Enter your town or city');
+    if (!postcode) messages.push('Enter postcode');
+    if (!phone1) messages.push('Enter phone number');
+    else if (phone1.length > 11) messages.push('Phone number can be max. 11 digits');
 
     valid = messages.length === 0;
   }
 
   if (!valid) {
-    alert('Vul aub alle velden correct in:\n' + messages.join('\n'));
+    alert('Please complete all fields correctly:\n' + messages.join('\n'));
   }
 
   return valid;
