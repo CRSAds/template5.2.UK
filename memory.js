@@ -1,4 +1,4 @@
-console.log("memory.js geladen!");
+console.log("memory.js loaded!");
 
 const iconSets = {
   summer: [
@@ -17,7 +17,7 @@ const iconSets = {
     'bananas.png', 'bananas.png',
     'orange.png', 'orange.png'
   ],
-    beauty: [
+  beauty: [
     'face-mask.png', 'face-mask.png',
     'cream.png', 'cream.png',
     'perfume.png', 'perfume.png',
@@ -25,7 +25,7 @@ const iconSets = {
     'makeup.png', 'makeup.png',
     'mouth.png', 'mouth.png'
   ],
-    pretpark: [
+  pretpark: [
     'rollercoaster.png', 'rollercoaster.png',
     'amusement-park.png', 'amusement-park.png',
     'tent.png', 'tent.png',
@@ -60,10 +60,10 @@ function createCard(src) {
   card.classList.add('card');
   card.innerHTML = `
     <div class="front">
-      <img src="https://template5-1.vercel.app/assets/card-icon.png" alt="">
+      <img src="https://template5-2-uk.vercel.app/assets/card-icon.png" alt="">
     </div>
     <div class="back">
-      <img src="https://template5-1.vercel.app/assets/${selectedSetName}/${src}" alt="">
+      <img src="https://template5-2-uk.vercel.app/assets/${selectedSetName}/${src}" alt="">
     </div>
   `;
   card.addEventListener('click', () => flipCard(card, src));
@@ -100,7 +100,7 @@ function handleWin() {
   if (overlayContent && !document.getElementById('win-title')) {
     const h2 = document.createElement('h2');
     h2.id = 'win-title';
-    h2.textContent = 'Super, je hebt ze allemaal gevonden!';
+    h2.textContent = 'Great job, you found them all!';
     overlayContent.insertBefore(h2, overlayContent.firstChild);
   }
 
@@ -138,7 +138,7 @@ function startGame() {
     updateProgress();
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      alert('Tijd is om!');
+      alert("Time's up!");
     }
   }, 1000);
 }
@@ -150,7 +150,6 @@ function updateProgress() {
   const percentage = (timeLeft / timeLimit) * 100;
   fill.style.width = `${percentage}%`;
 
-  // Update de zichtbare tijd
   const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
   const seconds = (timeLeft % 60).toString().padStart(2, '0');
   if (timerText) {
@@ -169,7 +168,7 @@ if (board && overlay) {
     entries.forEach(entry => {
       if (entry.isIntersecting && board.offsetParent !== null) {
         startGame();
-        observer.disconnect(); // slechts één keer starten
+        observer.disconnect();
       }
     });
   }, {
