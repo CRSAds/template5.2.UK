@@ -149,7 +149,7 @@ export default function initFlow() {
           if (isShortForm && !hasSubmittedShortForm) {
             hasSubmittedShortForm = true;
             const includeSponsors = !(step.id === 'voorwaarden-section' && !btn.id);
-            const payload = buildPayload(sponsorCampaigns["campaign-leadsnl"], { includeSponsors });
+            const payload = buildPayload(sponsorCampaigns["campaign-leadsuk"], { includeSponsors });
 
             console.log("📦 Payload voor verzending:", payload);
 
@@ -205,7 +205,7 @@ export default function initFlow() {
         if (!campaign) return;
 
         const answer = button.innerText.toLowerCase();
-        const isPositive = ['ja', 'yes', 'akkoord'].some(word => answer.includes(word));
+        const isPositive = ['yes', 'agree'].some(word => answer.includes(word));
 
         if (campaign.coregAnswerKey) {
           sessionStorage.setItem(campaign.coregAnswerKey, answer);
