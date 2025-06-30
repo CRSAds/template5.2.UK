@@ -167,7 +167,7 @@ export function setupFormSubmit() {
     if (Array.isArray(window.longFormCampaigns)) {
       window.longFormCampaigns.forEach(campaign => {
         const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
-        const isPositive = answer && ['ja', 'yes', 'akkoord'].some(word =>
+        const isPositive = answer && ['yes', 'agree'].some(word =>
           answer.toLowerCase().includes(word)
         );
 
