@@ -48,7 +48,7 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     ? `${dob_year.padStart(4, '0')}-${dob_month.padStart(2, '0')}-${dob_day.padStart(2, '0')}`
     : '';
 
-  const isShortForm = campaign.cid === 925;
+  const isShortForm = campaign.cid === 1123;
 
   const payload = {
     cid: campaign.cid,
