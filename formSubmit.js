@@ -70,10 +70,10 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
   };
 
 if (!isShortForm) {
-  payload.postcode = sessionStorage.getItem('postcode') || '';
-  payload.address3 = sessionStorage.getItem('address3') || '';
-  payload.towncity = sessionStorage.getItem('towncity') || '';
-  payload.phone1 = sessionStorage.getItem('phone1') || '';
+    payload.f_8_address3 = sessionStorage.getItem('address3') || '';
+    payload.f_9_towncity = sessionStorage.getItem('towncity') || '';
+    payload.f_12_phone1 = sessionStorage.getItem('phone1') || '';
+    payload.f_11_postcode = sessionStorage.getItem('postcode') || '';
 }
 
   if (campaign.coregAnswerKey) {
