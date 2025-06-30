@@ -80,7 +80,7 @@ if (!isShortForm) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
   }
 
-  if (campaign.cid === 925 && options.includeSponsors) {
+  if (campaign.cid === 1123 && options.includeSponsors) {
     const optin = sessionStorage.getItem('sponsor_optin');
     if (optin) {
       payload.f_2047_EM_CO_sponsors = optin;
