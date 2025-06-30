@@ -26,12 +26,15 @@ export default async function handler(req, res) {
       f_5_dob,
       email,
       postcode,
+      address3,
+      towncity,
+      phone1,
       straat,
       huisnummer,
       woonplaats,
       telefoon,
       t_id,
-      f_1322_transaction_id, // <-- toegevoegd
+      f_1322_transaction_id,
       f_2014_coreg_answer,
       f_1453_campagne_url,
       f_1684_sub_id,
@@ -42,7 +45,6 @@ export default async function handler(req, res) {
 
     console.log('Ontvangen data van frontend:', req.body);
 
-    // Extra logging voor tracking parameters
     console.log('🎯 Tracking parameters ontvangen:', {
       f_1684_sub_id,
       f_1685_aff_id,
@@ -56,7 +58,6 @@ export default async function handler(req, res) {
 
     const ipaddress = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || '';
 
-    // ✅ Gebruik veld uit payload als prioriteit, anders fallback naar t_id
     const safeTId = f_1322_transaction_id || t_id || 'unknown';
 
     const ipKey = `${ipaddress}_${cid}_${sid}`;
@@ -93,11 +94,11 @@ export default async function handler(req, res) {
       f_1_email: email || '',
       f_5_dob: f_5_dob || '',
       f_11_postcode: postcode || '',
-      f_6_address1: straat || '',
-      f_7_address2: huisnummer || '',
-      f_8_address3: '',
-      f_9_towncity: woonplaats || '',
-      f_12_phone1: telefoon || '',
+      f_6_address1: '', // niet gebruikt in UK
+      f_7_address2: '', // niet gebruikt in UK
+      f_8_address3: address3 || '',
+      f_9_towncity: towncity || '',
+      f_12_phone1: phone1 || '',
       f_17_ipaddress: ipaddress,
       f_55_optindate: optindate,
       f_1322_transaction_id: safeTId,
@@ -109,7 +110,6 @@ export default async function handler(req, res) {
       f_2047_EM_CO_sponsors: f_2047_EM_CO_sponsors || ''
     });
 
-    // Log de verwerkte URL
     console.log("🎯 URL met status=online:", f_1453_campagne_url);
     console.log("🎯 URL naar Databowl:", params.get('f_1453_campagne_url'));
     console.log('🎯 Parameters naar Databowl:', params.toString());
