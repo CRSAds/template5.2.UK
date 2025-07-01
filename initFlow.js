@@ -237,6 +237,71 @@ export default function initFlow() {
     });
   });
 
+  // ✅ DROP DOWN HANDLING VOOR SPONSOR-OPTIN (zoals "life insurance")
+document.querySelectorAll('select.sponsor-optin').forEach(select => {
+  const campaignId = select.id;
+  const campaign = sponsorCampaigns[campaignId];
+  if (!campaign) return;
+
+  select.addEventListener('change', () => {
+    const selectedValue = select.value?.trim();
+
+    if (!selectedValue) {
+      console.warn("⚠️ Geen geldige optie geselecteerd.");
+      return;
+    }
+
+    const isPositive = true;
+
+    console.log("🎯 Dropdown selectie:", {
+      campaignId,
+      answer: selectedValue,
+      isPositive,
+      requiresLongForm: campaign.requiresLongForm
+    });
+
+    if (campaign.coregAnswerKey) {
+      sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
+    }
+
+    if (campaign.requiresLongForm && isPositive) {
+      if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
+        longFormCampaigns.push(campaign);
+        console.log("➕ Toegevoegd aan longFormCampaigns via dropdown:", campaign.cid);
+      }
+    }
+
+    if (!campaign.requiresLongForm) {
+      const email = sessionStorage.getItem('email') || '';
+      if (!isSuspiciousLead(email)) {
+        fetchLead(buildPayload(campaign));
+      }
+    }
+
+    const parentStep = select.closest('.coreg-section, .flow-section');
+
+    if (!parentStep) {
+      console.warn('⚠️ Parent step not found for dropdown', select);
+      return;
+    }
+
+    parentStep.style.display = 'none';
+
+    const steps = Array.from(document.querySelectorAll('.flow-section, .coreg-section'));
+    const currentIndex = steps.indexOf(parentStep);
+    if (currentIndex !== -1) {
+      const next = steps[currentIndex + 1];
+      if (next) {
+        next.style.display = 'block';
+        reloadImages(next);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    setTimeout(() => checkIfLongFormShouldBeShown(), 100);
+  });
+});
+
   Object.entries(sponsorCampaigns).forEach(([campaignId, config]) => {
     if (config.hasCoregFlow && config.coregAnswerKey) {
       initGenericCoregSponsorFlow(campaignId, config.coregAnswerKey);
