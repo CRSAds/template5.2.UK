@@ -28,7 +28,7 @@ const sponsorCampaigns = {
     hasCoregFlow: false
   },
   "campaign-freestuff": {
-    cid: 4234,
+    cid: 4324,
     sid: 34,
     requiresLongForm: true,
     coregAnswerKey: "coreg_answer_campaign-freestuff",
