@@ -3,7 +3,7 @@ import { reloadImages } from './imageFix.js';
 import sponsorCampaigns from './sponsorCampaigns.js';
 
 window.sponsorCampaigns = sponsorCampaigns;
-window.submittedCampaigns = window.submittedCampaigns || new Set(); // aangepast
+window.submittedCampaigns = window.submittedCampaigns || new Set();
 
 const sponsorOptinUK = `crs_ja wowcher_ja superescapes_ja goodlifeplus_ja gogroopie_ja firstprizelottos_ja discountexperts_ja outspot_ja adviceglobal_ja scottishpower_ja prizereactor_ja utilita_ja Hutchison_ja britishgas_ja skyuk_ja yourlottoservice_ja onefamily_ja auramediagroup_ja secureforlife_ja protectyourfamily_ja`;
 
@@ -70,56 +70,36 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
   };
 
   if (!isShortForm) {
-    console.log("📦 Long form data uit sessionStorage:", {
-      address3: sessionStorage.getItem('address3'),
-      towncity: sessionStorage.getItem('towncity'),
-      postcode: sessionStorage.getItem('postcode'),
-      phone1: sessionStorage.getItem('phone1')
-    });
-
     payload.f_6_address1 = sessionStorage.getItem('address3') || '';
     payload.f_9_towncity = sessionStorage.getItem('towncity') || '';
     payload.f_11_postcode = sessionStorage.getItem('postcode') || '';
     payload.f_12_phone1 = sessionStorage.getItem('phone1') || '';
-
-    console.log("📦 Long form data in payload:", {
-      f_6_address1: payload.f_6_address1,
-      f_9_towncity: payload.f_9_towncity,
-      f_11_postcode: payload.f_11_postcode,
-      f_12_phone1: payload.f_12_phone1
-    });
   }
 
   if (campaign.coregAnswerKey) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
   }
 
-  if (campaign.cid === 1123 && options.includeSponsors) {
+  if (isShortForm && options.includeSponsors) {
     const optin = sessionStorage.getItem('sponsor_optin');
     if (optin) {
       payload.f_2047_EM_CO_sponsors = optin;
     }
   }
 
-  console.log("📦 Payload opgebouwd voor campaign:", campaign.cid, payload);
   return payload;
 }
 
 export async function fetchLead(payload) {
   const key = `${payload.cid}_${payload.sid}`;
 
-  // Extra logging
-  console.log("🔎 submittedCampaigns inhoud:", [...window.submittedCampaigns]);
-  console.log("🔍 Controle op key:", key);
-
-  // ✅ Check of al verzonden
   if (window.submittedCampaigns.has(key)) {
     console.log("✅ Lead al verzonden, overslaan");
     return Promise.resolve({ skipped: true });
   }
 
   try {
-    const response = await fetch('https://template5-2-uk.vercel.app/api/submit', { 
+    const response = await fetch('https://template5-2-uk.vercel.app/api/submit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -130,10 +110,7 @@ export async function fetchLead(payload) {
 
     const result = await response.json();
     console.log("✅ API antwoord:", result);
-
-    // ✅ Pas hier markeren als verzonden, na succesvolle API call
     window.submittedCampaigns.add(key);
-
     return result;
   } catch (error) {
     console.error("❌ Fout bij API call:", error);
@@ -173,7 +150,6 @@ export function setupFormSubmit() {
     const form = section.querySelector('form');
     if (!validateLongForm(form)) return;
 
-    // Mapping van velden naar de juiste namen
     const fieldMapping = {
       postcode: 'postcode',
       address3: 'address3',
@@ -181,11 +157,12 @@ export function setupFormSubmit() {
       phone1: 'phone1'
     };
 
-    // Opslaan van de velden met de juiste namen
     Object.entries(fieldMapping).forEach(([id, storageKey]) => {
       const val = document.getElementById(id)?.value.trim();
       if (val) sessionStorage.setItem(storageKey, val);
     });
+
+    const sponsorOptin = sessionStorage.getItem('sponsor_optin') || '';
 
     if (Array.isArray(window.longFormCampaigns)) {
       window.longFormCampaigns.forEach(campaign => {
@@ -194,16 +171,18 @@ export function setupFormSubmit() {
           answer.toLowerCase().includes(word)
         );
 
-        console.log("📨 Long form verwerking:", {
-          campaignId: campaign.cid,
-          coregAnswerKey: campaign.coregAnswerKey,
-          antwoord: answer,
-          isPositive
-        });
+        const isTMCosponsor = !!campaign.tmcosponsor;
 
         if (isPositive) {
-          const payload = buildPayload(campaign);
-          fetchLead(payload);
+          if (isTMCosponsor && sponsorOptin) {
+            const payload = buildPayload(campaign, { includeSponsors: false });
+            fetchLead(payload);
+          } else if (!isTMCosponsor) {
+            const payload = buildPayload(campaign);
+            fetchLead(payload);
+          } else {
+            console.log(`⛔️ TMCosponsor NIET verstuurd (geen opt-in): ${campaign.cid}`);
+          }
         } else {
           console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid} → antwoord was:`, answer);
         }
