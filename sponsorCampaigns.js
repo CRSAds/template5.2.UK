@@ -20,6 +20,20 @@ const sponsorCampaigns = {
     coregAnswerKey: "coreg_answer_campaign-scottishpower",
     hasCoregFlow: false
   },
+  "campaign-yourlottoservice": {
+    cid: 3235,
+    sid: 34,
+    requiresLongForm: true,
+    tmcosponsor: true,
+    hasCoregFlow: false
+  },
+  "campaign-firstprizelotto": {
+    cid: 3829,
+    sid: 34,
+    requiresLongForm: true,
+    tmcosponsor: true,
+    hasCoregFlow: false
+  },
   "campaign-goodlifeplus": {
     cid: 3796,
     sid: 34,
