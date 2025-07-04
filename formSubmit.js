@@ -164,29 +164,34 @@ export function setupFormSubmit() {
 
     const sponsorOptin = sessionStorage.getItem('sponsor_optin') || '';
 
+    // ⬅️ Eerst gewone long form sponsors
     if (Array.isArray(window.longFormCampaigns)) {
       window.longFormCampaigns.forEach(campaign => {
+        if (campaign.tmcosponsor) return; // overslaan, doen we hieronder
+
         const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
         const isPositive = answer && ['yes', 'agree'].some(word =>
           answer.toLowerCase().includes(word)
         );
 
-        const isTMCosponsor = !!campaign.tmcosponsor;
-
         if (isPositive) {
-          if (isTMCosponsor && sponsorOptin) {
-            const payload = buildPayload(campaign, { includeSponsors: false });
-            fetchLead(payload);
-          } else if (!isTMCosponsor) {
-            const payload = buildPayload(campaign);
-            fetchLead(payload);
-          } else {
-            console.log(`⛔️ TMCosponsor NIET verstuurd (geen opt-in): ${campaign.cid}`);
-          }
+          const payload = buildPayload(campaign);
+          fetchLead(payload);
         } else {
           console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid} → antwoord was:`, answer);
         }
       });
+    }
+
+    // ⬅️ Dan de tmcosponsors (zonder coregAnswerKey)
+    const tmcosponsors = Object.values(sponsorCampaigns).filter(c => c.tmcosponsor);
+    if (sponsorOptin) {
+      tmcosponsors.forEach(campaign => {
+        const payload = buildPayload(campaign, { includeSponsors: false });
+        fetchLead(payload);
+      });
+    } else {
+      console.log("⛔️ Geen sponsor_optin, tmcosponsors worden niet verstuurd");
     }
 
     section.style.display = 'none';
