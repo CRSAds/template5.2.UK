@@ -48,6 +48,13 @@ const sponsorCampaigns = {
     coregAnswerKey: "coreg_answer_campaign-freestuff",
     hasCoregFlow: false
   },
+  "campaign-greatbiglottery": {
+    cid: 4918,
+    sid: 34,
+    requiresLongForm: true,
+    coregAnswerKey: "coreg_answer_campaign-greatbiglottery",
+    hasCoregFlow: false
+  },
   "campaign-tails": {
     cid: 4159,
     sid: 34,
@@ -60,13 +67,6 @@ const sponsorCampaigns = {
     sid: 34,
     requiresLongForm: true,
     coregAnswerKey: "coreg_answer_campaign-onefamily",
-    hasCoregFlow: false
-  },
-  "campaign-firstprizelottos": {
-    cid: 3829,
-    sid: 34,
-    requiresLongForm: true,
-    coregAnswerKey: "coreg_answer_campaign-firstprizelottos",
     hasCoregFlow: false
   },
   "campaign-lifeinsurance": {
