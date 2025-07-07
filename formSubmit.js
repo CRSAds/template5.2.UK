@@ -80,6 +80,20 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
   }
 
+  // ✅ Extra dropdown antwoord indien beschikbaar
+  Object.entries(sponsorCampaigns).forEach(([key, config]) => {
+    if (
+      config.cid === campaign.cid &&
+      config.coregAnswerKey &&
+      config.answerFieldKey
+    ) {
+      const dropdownValue = sessionStorage.getItem(config.coregAnswerKey);
+      if (dropdownValue) {
+        payload[config.answerFieldKey] = dropdownValue;
+      }
+    }
+  });
+
   if (isShortForm && options.includeSponsors) {
     const optin = sessionStorage.getItem('sponsor_optin');
     if (optin) {
