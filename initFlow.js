@@ -77,7 +77,6 @@ export default function initFlow() {
   const steps = Array.from(document.querySelectorAll('.flow-section, .coreg-section'))
   .filter(step => {
     if (statusParam === 'online') {
-      // Sla secties over die bedoeld zijn voor status=live (zoals IVR)
       return !step.classList.contains('status-live') && !step.classList.contains('ivr-section');
     }
     if (statusParam === 'live') return true;
@@ -198,109 +197,71 @@ export default function initFlow() {
       });
     });
 
-    step.querySelectorAll('.sponsor-optin').forEach(button => {
-      button.addEventListener('click', () => {
-        const campaignId = button.id;
-        const campaign = sponsorCampaigns[campaignId];
-        if (!campaign) return;
+    step.querySelectorAll('select.sponsor-optin').forEach(select => {
+      const campaignId = select.id;
+      const campaign = sponsorCampaigns[campaignId];
+      if (!campaign) return;
 
-        const answer = button.innerText.toLowerCase();
-        const isPositive = ['yes', 'agree'].some(word => answer.includes(word));
+      select.addEventListener('change', (event) => {
+        const selectedValue = select.value?.trim();
+        const selectedIndex = select.selectedIndex;
+
+        if (!selectedValue || selectedIndex === 0) {
+          console.warn("⚠️ Geen geldige selectie gedaan (nog default)");
+          return;
+        }
+
+        const isPositive = true;
+
+        console.log("🎯 Dropdown selectie:", {
+          campaignId,
+          answer: selectedValue,
+          isPositive,
+          requiresLongForm: campaign.requiresLongForm
+        });
 
         if (campaign.coregAnswerKey) {
-          sessionStorage.setItem(campaign.coregAnswerKey, answer);
+          sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
         }
 
         if (campaign.requiresLongForm && isPositive) {
           if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
             longFormCampaigns.push(campaign);
+            console.log("➕ Toegevoegd aan longFormCampaigns via dropdown:", campaign.cid);
           }
         }
 
         if (!campaign.requiresLongForm) {
-          const coregPayload = buildPayload(campaign);
           const email = sessionStorage.getItem('email') || '';
           if (!isSuspiciousLead(email)) {
-            fetchLead(coregPayload);
+            fetchLead(buildPayload(campaign));
           }
         }
 
-        step.style.display = 'none';
-        const next = steps[steps.indexOf(step) + 1];
-        if (next) {
-          next.style.display = 'block';
-          reloadImages(next);
+        const parentStep = select.closest('.coreg-section, .flow-section');
+
+        if (!parentStep) {
+          console.warn('⚠️ Parent step not found for dropdown', select);
+          return;
         }
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        parentStep.style.display = 'none';
+
+        const steps = Array.from(document.querySelectorAll('.flow-section, .coreg-section'));
+        const currentIndex = steps.indexOf(parentStep);
+        if (currentIndex !== -1) {
+          const next = steps[currentIndex + 1];
+          if (next) {
+            next.style.display = 'block';
+            reloadImages(next);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }
+
+        setTimeout(() => checkIfLongFormShouldBeShown(), 100);
       });
     });
   });
-
-  // ✅ DROP DOWN HANDLING VOOR SPONSOR-OPTIN (zoals "life insurance")
-document.querySelectorAll('select.sponsor-optin').forEach(select => {
-  const campaignId = select.id;
-  const campaign = sponsorCampaigns[campaignId];
-  if (!campaign) return;
-
-  select.addEventListener('change', () => {
-    const selectedValue = select.value?.trim();
-
-  if (!selectedValue || select.selectedIndex === 0) {
-    console.warn("⚠️ Geen selectie of nog op default optie.");
-    return;
-    }
-
-    const isPositive = true;
-
-    console.log("🎯 Dropdown selectie:", {
-      campaignId,
-      answer: selectedValue,
-      isPositive,
-      requiresLongForm: campaign.requiresLongForm
-    });
-
-    if (campaign.coregAnswerKey) {
-      sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
-    }
-
-    if (campaign.requiresLongForm && isPositive) {
-      if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
-        longFormCampaigns.push(campaign);
-        console.log("➕ Toegevoegd aan longFormCampaigns via dropdown:", campaign.cid);
-      }
-    }
-
-    if (!campaign.requiresLongForm) {
-      const email = sessionStorage.getItem('email') || '';
-      if (!isSuspiciousLead(email)) {
-        fetchLead(buildPayload(campaign));
-      }
-    }
-
-    const parentStep = select.closest('.coreg-section, .flow-section');
-
-    if (!parentStep) {
-      console.warn('⚠️ Parent step not found for dropdown', select);
-      return;
-    }
-
-    parentStep.style.display = 'none';
-
-    const steps = Array.from(document.querySelectorAll('.flow-section, .coreg-section'));
-    const currentIndex = steps.indexOf(parentStep);
-    if (currentIndex !== -1) {
-      const next = steps[currentIndex + 1];
-      if (next) {
-        next.style.display = 'block';
-        reloadImages(next);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-
-    setTimeout(() => checkIfLongFormShouldBeShown(), 100);
-  });
-});
 
   Object.entries(sponsorCampaigns).forEach(([campaignId, config]) => {
     if (config.hasCoregFlow && config.coregAnswerKey) {
@@ -308,33 +269,32 @@ document.querySelectorAll('select.sponsor-optin').forEach(select => {
     }
   });
 
-// ⏱️ Automatisch doorschakelen na Sovendus
-const sovendusSection = document.getElementById('sovendus-section');
-const nextAfterSovendus = sovendusSection?.nextElementSibling;
+  // ⏱️ Automatisch doorschakelen na Sovendus
+  const sovendusSection = document.getElementById('sovendus-section');
+  const nextAfterSovendus = sovendusSection?.nextElementSibling;
 
-if (sovendusSection && nextAfterSovendus) {
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        console.log("👀 Sovendus-sectie in beeld — setup en timer gestart");
-        obs.unobserve(entry.target);
+  if (sovendusSection && nextAfterSovendus) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          console.log("👀 Sovendus-sectie in beeld — setup en timer gestart");
+          obs.unobserve(entry.target);
 
-        // Sovendus initialiseren zodra in beeld
-        setupSovendus();
+          setupSovendus();
 
-        setTimeout(() => {
-          console.log("⏱️ Timer afgelopen — doorgaan naar volgende sectie na Sovendus");
-          sovendusSection.style.display = 'none';
-          nextAfterSovendus.style.display = 'block';
-          reloadImages(nextAfterSovendus);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 10000);
-      }
-    });
-  }, { threshold: 0.5 });
+          setTimeout(() => {
+            console.log("⏱️ Timer afgelopen — doorgaan naar volgende sectie na Sovendus");
+            sovendusSection.style.display = 'none';
+            nextAfterSovendus.style.display = 'block';
+            reloadImages(nextAfterSovendus);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 10000);
+        }
+      });
+    }, { threshold: 0.5 });
 
-  observer.observe(sovendusSection);
-}
+    observer.observe(sovendusSection);
+  }
 }
 
 const coregAnswers = {};
