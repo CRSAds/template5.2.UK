@@ -233,8 +233,6 @@ export default function initFlow() {
           reloadImages(next);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        setTimeout(() => checkIfLongFormShouldBeShown(), 100);
       });
     });
   });
