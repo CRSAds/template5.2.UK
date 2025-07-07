@@ -197,7 +197,7 @@ export default function initFlow() {
       });
     });
 
-    step.querySelectorAll('select.sponsor-optin').forEach(select => {
+    step.querySelectorAll('select').forEach(select => {
       const campaignId = select.id;
       const campaign = sponsorCampaigns[campaignId];
       if (!campaign) return;
@@ -215,36 +215,23 @@ export default function initFlow() {
           sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
         }
 
-        console.log("📥 Dropdown selectie geregistreerd:", {
-          campaignId,
-          antwoord: selectedValue,
-          alwaysSend: campaign.alwaysSend
-        });
-
-        if (campaign.requiresLongForm && campaign.alwaysSend) {
-          if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
-            longFormCampaigns.push(campaign);
-            console.log("➕ Toegevoegd aan longFormCampaigns via dropdown (alwaysSend):", campaign.cid);
-          }
+        if (campaign.requiresLongForm && campaign.answerFieldKey && !longFormCampaigns.find(c => c.cid === campaign.cid)) {
+          longFormCampaigns.push(campaign);
+          console.log("➕ Toegevoegd aan longFormCampaigns via dropdown:", campaign.cid);
         }
 
         const parentStep = select.closest('.coreg-section, .flow-section');
-        if (!parentStep) {
-          console.warn('⚠️ Parent step not found for dropdown', select);
-          return;
-        }
+        if (!parentStep) return;
 
         parentStep.style.display = 'none';
 
         const steps = Array.from(document.querySelectorAll('.flow-section, .coreg-section'));
         const currentIndex = steps.indexOf(parentStep);
-        if (currentIndex !== -1) {
-          const next = steps[currentIndex + 1];
-          if (next) {
-            next.style.display = 'block';
-            reloadImages(next);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
+        const next = steps[currentIndex + 1];
+        if (next) {
+          next.style.display = 'block';
+          reloadImages(next);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         setTimeout(() => checkIfLongFormShouldBeShown(), 100);
