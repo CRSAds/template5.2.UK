@@ -80,12 +80,6 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
   }
 
-  // Optioneel extra veld bij dropdownselectie
-  if (campaign.answerFieldKey) {
-    payload[campaign.answerFieldKey] = sessionStorage.getItem(campaign.coregAnswerKey) || '';
-  }
-
-  // ✅ Extra veld voor dropdown-antwoord (indien aanwezig)
   if (campaign.answerFieldKey) {
     const dropdownAnswer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
     payload[campaign.answerFieldKey] = dropdownAnswer;
@@ -100,6 +94,7 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
 
   return payload;
 }
+
 
 export async function fetchLead(payload) {
   const key = `${payload.cid}_${payload.sid}`;
@@ -177,22 +172,19 @@ export function setupFormSubmit() {
 
     // ⬅️ Eerst gewone long form sponsors
     if (Array.isArray(window.longFormCampaigns)) {
-      window.longFormCampaigns.forEach(campaign => {
-        if (campaign.tmcosponsor) return; // overslaan, doen we hieronder
+    window.longFormCampaigns.forEach(campaign => {
+      if (campaign.tmcosponsor) return;
 
-        const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
-        const isPositive =
-          campaign.alwaysSend ||
-          (answer && ['yes', 'agree'].some(word =>
-            answer.toLowerCase().includes(word)
-          ));
+      const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
+      const isPositive = campaign.alwaysSend ||
+        (answer && ['yes', 'agree'].some(word => answer.toLowerCase().includes(word)));
 
-        if (isPositive) {
-          const payload = buildPayload(campaign);
-          fetchLead(payload);
-        } else {
-          console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid} → antwoord was:`, answer);
-        }
+      if (isPositive) {
+        const payload = buildPayload(campaign);
+        fetchLead(payload);
+      } else {
+        console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid} → antwoord was:`, answer);
+      }
       });
     }
 
