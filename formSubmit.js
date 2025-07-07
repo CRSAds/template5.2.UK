@@ -95,7 +95,6 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
   return payload;
 }
 
-
 export async function fetchLead(payload) {
   const key = `${payload.cid}_${payload.sid}`;
 
@@ -170,25 +169,25 @@ export function setupFormSubmit() {
 
     const sponsorOptin = sessionStorage.getItem('sponsor_optin') || '';
 
-    // ⬅️ Eerst gewone long form sponsors
     if (Array.isArray(window.longFormCampaigns)) {
-    window.longFormCampaigns.forEach(campaign => {
-      if (campaign.tmcosponsor) return;
+      window.longFormCampaigns.forEach(campaign => {
+        if (campaign.tmcosponsor) return;
 
-      const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
-      const isPositive = campaign.alwaysSend ||
-        (answer && ['yes', 'agree'].some(word => answer.toLowerCase().includes(word)));
+        const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
+        const dropdownValue = campaign.answerFieldKey ? answer : '';
+        const isPositive =
+          campaign.alwaysSend ||
+          (dropdownValue && campaign.answerFieldKey && !campaign.alwaysSend);
 
-      if (isPositive) {
-        const payload = buildPayload(campaign);
-        fetchLead(payload);
-      } else {
-        console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid} → antwoord was:`, answer);
-      }
+        if (isPositive) {
+          const payload = buildPayload(campaign);
+          fetchLead(payload);
+        } else {
+          console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid} → antwoord was:`, answer);
+        }
       });
     }
 
-    // ⬅️ Dan de tmcosponsors (zonder coregAnswerKey)
     const tmcosponsors = Object.values(sponsorCampaigns).filter(c => c.tmcosponsor);
     if (sponsorOptin) {
       tmcosponsors.forEach(campaign => {
