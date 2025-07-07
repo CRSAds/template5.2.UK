@@ -80,19 +80,11 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
   }
 
-  // ✅ Extra dropdown antwoord indien beschikbaar
-  Object.entries(sponsorCampaigns).forEach(([key, config]) => {
-    if (
-      config.cid === campaign.cid &&
-      config.coregAnswerKey &&
-      config.answerFieldKey
-    ) {
-      const dropdownValue = sessionStorage.getItem(config.coregAnswerKey);
-      if (dropdownValue) {
-        payload[config.answerFieldKey] = dropdownValue;
-      }
-    }
-  });
+  // ✅ Extra veld voor dropdown-antwoord (indien aanwezig)
+  if (campaign.answerFieldKey) {
+    const dropdownAnswer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
+    payload[campaign.answerFieldKey] = dropdownAnswer;
+  }
 
   if (isShortForm && options.includeSponsors) {
     const optin = sessionStorage.getItem('sponsor_optin');
@@ -184,9 +176,11 @@ export function setupFormSubmit() {
         if (campaign.tmcosponsor) return; // overslaan, doen we hieronder
 
         const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
-        const isPositive = answer && ['yes', 'agree'].some(word =>
-          answer.toLowerCase().includes(word)
-        );
+        const isPositive =
+          campaign.alwaysSend ||
+          (answer && ['yes', 'agree'].some(word =>
+            answer.toLowerCase().includes(word)
+          ));
 
         if (isPositive) {
           const payload = buildPayload(campaign);
