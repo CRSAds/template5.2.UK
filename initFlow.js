@@ -246,9 +246,9 @@ document.querySelectorAll('select.sponsor-optin').forEach(select => {
   select.addEventListener('change', () => {
     const selectedValue = select.value?.trim();
 
-    if (!selectedValue) {
-      console.warn("⚠️ Geen geldige optie geselecteerd.");
-      return;
+  if (!selectedValue || select.selectedIndex === 0) {
+    console.warn("⚠️ Geen selectie of nog op default optie.");
+    return;
     }
 
     const isPositive = true;
