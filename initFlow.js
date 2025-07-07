@@ -202,32 +202,29 @@ export default function initFlow() {
       const campaign = sponsorCampaigns[campaignId];
       if (!campaign) return;
 
-      select.addEventListener('change', (event) => {
-        const selectedValue = select.value?.trim();
-        const selectedIndex = select.selectedIndex;
+     select.addEventListener('change', () => {
+  const selectedValue = select.value?.trim();
+  const selectedIndex = select.selectedIndex;
 
-        if (!selectedValue || selectedIndex === 0) {
-          console.warn("⚠️ Geen geldige selectie gedaan (nog default)");
-          return;
-        }
+  if (!selectedValue || selectedIndex === 0) {
+    console.warn("⚠️ Geen geldige selectie gedaan (nog default)");
+    return;
+  }
 
-        const isPositive = true;
+  if (campaign.coregAnswerKey) {
+    sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
+  }
 
-        console.log("🎯 Dropdown selectie:", {
-          campaignId,
-          answer: selectedValue,
-          isPositive,
-          requiresLongForm: campaign.requiresLongForm
-        });
+  console.log("📥 Dropdown selectie geregistreerd:", {
+    campaignId,
+    antwoord: selectedValue,
+    alwaysSend: campaign.alwaysSend
+  });
 
-        if (campaign.coregAnswerKey) {
-          sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
-        }
-
-        if (campaign.requiresLongForm && isPositive) {
-          if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
-            longFormCampaigns.push(campaign);
-            console.log("➕ Toegevoegd aan longFormCampaigns via dropdown:", campaign.cid);
+  if (campaign.requiresLongForm && campaign.alwaysSend) {
+    if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
+      longFormCampaigns.push(campaign);
+      console.log("➕ Toegevoegd aan longFormCampaigns via dropdown (alwaysSend):", campaign.cid);
           }
         }
 
