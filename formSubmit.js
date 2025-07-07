@@ -80,6 +80,11 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
   }
 
+  // Optioneel extra veld bij dropdownselectie
+  if (campaign.answerFieldKey) {
+    payload[campaign.answerFieldKey] = sessionStorage.getItem(campaign.coregAnswerKey) || '';
+  }
+
   // ✅ Extra veld voor dropdown-antwoord (indien aanwezig)
   if (campaign.answerFieldKey) {
     const dropdownAnswer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
