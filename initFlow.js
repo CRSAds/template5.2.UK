@@ -75,13 +75,13 @@ export default function initFlow() {
   }
 
   const steps = Array.from(document.querySelectorAll('.flow-section, .coreg-section'))
-  .filter(step => {
-    if (statusParam === 'online') {
-      return !step.classList.contains('status-live') && !step.classList.contains('ivr-section');
-    }
-    if (statusParam === 'live') return true;
-    return false;
-  });
+    .filter(step => {
+      if (statusParam === 'online') {
+        return !step.classList.contains('status-live') && !step.classList.contains('ivr-section');
+      }
+      if (statusParam === 'live') return true;
+      return false;
+    });
 
   longFormCampaigns.length = 0;
 
@@ -202,41 +202,33 @@ export default function initFlow() {
       const campaign = sponsorCampaigns[campaignId];
       if (!campaign) return;
 
-     select.addEventListener('change', () => {
-  const selectedValue = select.value?.trim();
-  const selectedIndex = select.selectedIndex;
+      select.addEventListener('change', () => {
+        const selectedValue = select.value?.trim();
+        const selectedIndex = select.selectedIndex;
 
-  if (!selectedValue || selectedIndex === 0) {
-    console.warn("⚠️ Geen geldige selectie gedaan (nog default)");
-    return;
-  }
-
-  if (campaign.coregAnswerKey) {
-    sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
-  }
-
-  console.log("📥 Dropdown selectie geregistreerd:", {
-    campaignId,
-    antwoord: selectedValue,
-    alwaysSend: campaign.alwaysSend
-  });
-
-  if (campaign.requiresLongForm && campaign.alwaysSend) {
-    if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
-      longFormCampaigns.push(campaign);
-      console.log("➕ Toegevoegd aan longFormCampaigns via dropdown (alwaysSend):", campaign.cid);
-          }
+        if (!selectedValue || selectedIndex === 0) {
+          console.warn("⚠️ Geen geldige selectie gedaan (nog default)");
+          return;
         }
 
-        if (!campaign.requiresLongForm) {
-          const email = sessionStorage.getItem('email') || '';
-          if (!isSuspiciousLead(email)) {
-            fetchLead(buildPayload(campaign));
+        if (campaign.coregAnswerKey) {
+          sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
+        }
+
+        console.log("📥 Dropdown selectie geregistreerd:", {
+          campaignId,
+          antwoord: selectedValue,
+          alwaysSend: campaign.alwaysSend
+        });
+
+        if (campaign.requiresLongForm && campaign.alwaysSend) {
+          if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
+            longFormCampaigns.push(campaign);
+            console.log("➕ Toegevoegd aan longFormCampaigns via dropdown (alwaysSend):", campaign.cid);
           }
         }
 
         const parentStep = select.closest('.coreg-section, .flow-section');
-
         if (!parentStep) {
           console.warn('⚠️ Parent step not found for dropdown', select);
           return;
@@ -266,7 +258,6 @@ export default function initFlow() {
     }
   });
 
-  // ⏱️ Automatisch doorschakelen na Sovendus
   const sovendusSection = document.getElementById('sovendus-section');
   const nextAfterSovendus = sovendusSection?.nextElementSibling;
 
