@@ -18,7 +18,8 @@ const sponsorCampaigns = {
     sid: 34,
     requiresLongForm: true,
     coregAnswerKey: "coreg_answer_campaign-scottishpower",
-    hasCoregFlow: false
+    answerFieldKey: "f_2575_coreg_answer_dropdown", // alleen dropdown antwoord
+    hasCoregFlow: true
   },
   "campaign-yourlottoservice": {
     cid: 3235,
