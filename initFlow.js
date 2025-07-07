@@ -277,14 +277,15 @@ function initGenericCoregSponsorFlow(sponsorId, coregAnswerKey) {
   coregAnswers[sponsorId] = [];
 
   const allSections = document.querySelectorAll(`[id^="campaign-${sponsorId}"]`);
-  allSections.forEach(section => {
+  allSections.forEach((section, index) => {
     const buttons = section.querySelectorAll('.flow-next');
     buttons.forEach(button => {
       button.addEventListener('click', () => {
         const answerText = button.innerText.trim();
         coregAnswers[sponsorId].push(answerText);
 
-        if (!button.classList.contains('sponsor-next')) return;
+        const isPositive = button.classList.contains('sponsor-optin') || button.classList.contains('sponsor-next');
+        if (!isPositive) return;
 
         let nextStepId = '';
         button.classList.forEach(cls => {
@@ -299,47 +300,25 @@ function initGenericCoregSponsorFlow(sponsorId, coregAnswerKey) {
           const nextSection = document.getElementById(nextStepId);
           if (nextSection) {
             nextSection.style.display = 'block';
-          } else {
-            handleGenericNextCoregSponsor(sponsorId, coregAnswerKey);
+            reloadImages(nextSection);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
           }
-        } else {
-          handleGenericNextCoregSponsor(sponsorId, coregAnswerKey);
         }
 
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Als dit de laatste stap is → combineer antwoorden en ga naar volgende coreg
+        const isLastStep = index === allSections.length - 1;
+        if (isLastStep) {
+          handleGenericNextCoregSponsor(sponsorId, coregAnswerKey);
+        } else {
+          const next = allSections[index + 1];
+          if (next) {
+            next.style.display = 'block';
+            reloadImages(next);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }
       });
     });
   });
-}
-
-function handleGenericNextCoregSponsor(sponsorId, coregAnswerKey) {
-  const combinedAnswer = coregAnswers[sponsorId].join(' - ');
-  sessionStorage.setItem(coregAnswerKey, combinedAnswer);
-
-  const currentCoregSection = document.querySelector(`.coreg-section[style*="display: block"]`);
-  const flowNextBtn = currentCoregSection?.querySelector('.flow-next');
-  flowNextBtn?.click();
-
-  setTimeout(() => checkIfLongFormShouldBeShown(), 100);
-}
-
-function checkIfLongFormShouldBeShown() {
-  const longFormSection = document.getElementById('long-form-section');
-  const alreadyShown = longFormSection?.getAttribute('data-displayed') === 'true';
-  const remainingCoregs = Array.from(document.querySelectorAll('.coreg-section'))
-    .filter(s => window.getComputedStyle(s).display !== 'none');
-
-  if (remainingCoregs.length > 0 || alreadyShown) return;
-
-  if (longFormCampaigns.length > 0) {
-    longFormSection.style.display = 'block';
-    longFormSection.setAttribute('data-displayed', 'true');
-    reloadImages(longFormSection);
-  } else {
-    const next = longFormSection?.nextElementSibling;
-    if (next) {
-      next.style.display = 'block';
-      reloadImages(next);
-    }
-  }
 }
