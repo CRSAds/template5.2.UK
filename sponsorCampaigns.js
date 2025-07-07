@@ -74,6 +74,7 @@ const sponsorCampaigns = {
     sid: 34,
     requiresLongForm: true,
     coregAnswerKey: "coreg_answer_campaign-lifeinsurance",
+    answerFieldKey: "f_2575_coreg_answer_dropdown",
     hasCoregFlow: true
   },
   "campaign-leadsuk": {
