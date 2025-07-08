@@ -206,7 +206,7 @@ export default function initFlow() {
         if (!campaign) return;
 
         const answer = button.innerText.toLowerCase();
-        const isPositive = ['agree', 'yes'].some(word => answer.includes(word));
+        const isPositive = ['agree', 'yes', 'ja', 'akkoord'].some(word => answer.includes(word));
 
         if (campaign.coregAnswerKey) {
           sessionStorage.setItem(campaign.coregAnswerKey, answer);
@@ -233,6 +233,33 @@ export default function initFlow() {
           reloadImages(next);
         }
 
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    // Handler voor relevante dropdowns (voor coreg sponsors met dropdown)
+    step.querySelectorAll('select').forEach(select => {
+      const campaign = sponsorCampaigns[select.id];
+      // Alleen voor campagnes die answerFieldKey (payload veld) hebben
+      if (!campaign || !campaign.answerFieldKey) return;
+
+      select.addEventListener('change', () => {
+        const selectedValue = select.value;
+        if (!selectedValue) return;
+
+        // Sla altijd antwoord op (voor buildPayload)
+        sessionStorage.setItem(
+          campaign.dropdownKey || `dropdown_answer_${select.id}`,
+          selectedValue
+        );
+
+        // Verberg huidige sectie en toon de volgende
+        step.style.display = 'none';
+        const next = steps[steps.indexOf(step) + 1];
+        if (next) {
+          next.style.display = 'block';
+          reloadImages(next);
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
