@@ -5,7 +5,7 @@ import sponsorCampaigns from './sponsorCampaigns.js';
 window.sponsorCampaigns = sponsorCampaigns;
 window.submittedCampaigns = window.submittedCampaigns || new Set();
 
-const sponsorOptinUK = `crs_ja wowcher_ja superescapes_ja goodlifeplus_ja gogroopie_ja firstprizelottos_ja discountexperts_ja outspot_ja adviceglobal_ja scottishpower_ja prizereactor_ja utilita_ja Hutchison_ja britishgas_ja skyuk_ja yourlottoservice_ja onefamily_ja auramediagroup_ja secureforlife_ja protectyourfamily_ja`;
+const sponsorOptinUK = `wowcher_ja superescapes_ja gogroopie_ja firstprizelottos_ja discountexperts_ja outspot_ja adviceglobal_ja prizereactor_ja yourlottoservice_ja onefamily_ja`;
 
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('accept-sponsors-btn');
