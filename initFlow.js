@@ -206,7 +206,7 @@ export default function initFlow() {
         if (!campaign) return;
 
         const answer = button.innerText.toLowerCase();
-        const isPositive = ['ja', 'yes', 'akkoord'].some(word => answer.includes(word));
+        const isPositive = ['agree', 'yes'].some(word => answer.includes(word));
 
         if (campaign.coregAnswerKey) {
           sessionStorage.setItem(campaign.coregAnswerKey, answer);
