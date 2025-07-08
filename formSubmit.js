@@ -80,10 +80,13 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
     payload.f_2014_coreg_answer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
   }
 
+  // === BEGIN DROPDOWN SUPPORT ===
+  // Alleen voor campagnes met answerFieldKey (Scottish Power & Life Insurance)
   if (campaign.answerFieldKey) {
-    const dropdownAnswer = sessionStorage.getItem(campaign.coregAnswerKey) || '';
+    const dropdownAnswer = sessionStorage.getItem(`dropdown_answer_${campaign.campaignId || Object.keys(sponsorCampaigns).find(key => sponsorCampaigns[key].cid === campaign.cid)}`) || '';
     payload[campaign.answerFieldKey] = dropdownAnswer;
   }
+  // === END DROPDOWN SUPPORT ===
 
   if (isShortForm && options.includeSponsors) {
     const optin = sessionStorage.getItem('sponsor_optin');
@@ -173,18 +176,24 @@ export function setupFormSubmit() {
       window.longFormCampaigns.forEach(campaign => {
         if (campaign.tmcosponsor) return;
 
-        const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
-        const dropdownValue = campaign.answerFieldKey ? answer : '';
-        const isPositive =
-          campaign.alwaysSend ||
-          (dropdownValue && campaign.answerFieldKey && !campaign.alwaysSend);
+        // === BEGIN DROPDOWN SUPPORT ===
+        // Nieuwe check: lead altijd sturen bij ingevulde optin óf (voor dropdown sponsors) als dropdown ingevuld is
+        let sendLead = false;
+        if (campaign.answerFieldKey) {
+          const dropdownValue = sessionStorage.getItem(`dropdown_answer_${campaign.campaignId || Object.keys(sponsorCampaigns).find(key => sponsorCampaigns[key].cid === campaign.cid)}`);
+          sendLead = !!dropdownValue;
+        } else {
+          const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
+          sendLead = !!answer && answer.toLowerCase().includes('ja');
+        }
 
-        if (isPositive) {
+        if (sendLead) {
           const payload = buildPayload(campaign);
           fetchLead(payload);
         } else {
-          console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid} → antwoord was:`, answer);
+          console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid}`);
         }
+        // === END DROPDOWN SUPPORT ===
       });
     }
 
