@@ -1,4 +1,4 @@
-import { reloadImages } from './imageFix.js';
+vimport { reloadImages } from './imageFix.js';
 import { fetchLead, buildPayload } from './formSubmit.js';
 import sponsorCampaigns from './sponsorCampaigns.js';
 import setupSovendus from './setupSovendus.js';
@@ -93,11 +93,9 @@ export default function initFlow() {
   }
 
   steps.forEach((step, stepIndex) => {
+    // Handler voor .flow-next (NEE-knoppen en vervolgvragen/coreg-stappen)
     step.querySelectorAll('.flow-next').forEach(btn => {
       btn.addEventListener('click', () => {
-        // Debug
-        // console.log('Flow-next button click:', step.id, btn.innerText);
-
         const skipNext = btn.classList.contains('skip-next-section');
         const isFinalCoreg = btn.classList.contains('final-coreg');
 
@@ -115,19 +113,14 @@ export default function initFlow() {
         const campaignId = step.id?.startsWith('campaign-') ? step.id : null;
         const campaign = sponsorCampaigns[campaignId];
 
-        // Voor coreg, sla antwoord op bij .sponsor-next knop
         if (campaign?.coregAnswerKey && btn.classList.contains('sponsor-next')) {
           sessionStorage.setItem(campaign.coregAnswerKey, btn.innerText.trim());
         }
 
-        // Voor sponsor-optin (ja-knop) geldt dit NIET (daar geen return/stop!)
-
-        // Voorwaarde-optin-reset
         if (step.id === 'voorwaarden-section' && !btn.id) {
           sessionStorage.removeItem('sponsor_optin');
         }
 
-        // === Form validation/submit handling ===
         const form = step.querySelector('form');
         const isShortForm = form?.id === 'lead-form';
 
@@ -195,21 +188,6 @@ export default function initFlow() {
           }
         }
 
-        // === DROPDOWN SUPPORT: sla dropdown-antwoord altijd op, maar blokkeer flow niet! ===
-        if (
-          campaign &&
-          campaign.hasCoregFlow &&
-          campaign.answerFieldKey === "f_2575_coreg_answer_dropdown"
-        ) {
-          const dropdown = step.querySelector('select[name="coreg-dropdown"]');
-          if (dropdown) {
-            const dropdownValue = dropdown.value;
-            sessionStorage.setItem(`dropdown_answer_${campaignId}`, dropdownValue);
-          }
-        }
-        // === EINDE DROPDOWN SUPPORT ===
-
-        // === DEZE CODE MOET ALTIJD WORDEN UITGEVOERD, GEEN RETURN TUSSENDOOR! ===
         step.style.display = 'none';
         const next = skipNext ? steps[stepIndex + 2] : steps[stepIndex + 1];
         if (next) {
@@ -220,7 +198,44 @@ export default function initFlow() {
       });
     });
 
-    // De select-eventhandlers voor dropdowns mogen blijven zoals ze zijn!
+    // Handler voor alle .sponsor-optin knoppen (JA-knoppen voor coreg)
+    step.querySelectorAll('.sponsor-optin').forEach(button => {
+      button.addEventListener('click', () => {
+        const campaignId = button.id;
+        const campaign = sponsorCampaigns[campaignId];
+        if (!campaign) return;
+
+        const answer = button.innerText.toLowerCase();
+        const isPositive = ['ja', 'yes', 'akkoord'].some(word => answer.includes(word));
+
+        if (campaign.coregAnswerKey) {
+          sessionStorage.setItem(campaign.coregAnswerKey, answer);
+        }
+
+        if (campaign.requiresLongForm && isPositive) {
+          if (!longFormCampaigns.find(c => c.cid === campaign.cid)) {
+            longFormCampaigns.push(campaign);
+          }
+        }
+
+        if (!campaign.requiresLongForm) {
+          const coregPayload = buildPayload(campaign);
+          const email = sessionStorage.getItem('email') || '';
+          if (!isSuspiciousLead(email)) {
+            fetchLead(coregPayload);
+          }
+        }
+
+        step.style.display = 'none';
+        const next = steps[steps.indexOf(step) + 1];
+        if (next) {
+          next.style.display = 'block';
+          reloadImages(next);
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
   });
 
   Object.entries(sponsorCampaigns).forEach(([campaignId, config]) => {
@@ -229,6 +244,7 @@ export default function initFlow() {
     }
   });
 
+  // ⏱️ Automatisch doorschakelen na Sovendus
   const sovendusSection = document.getElementById('sovendus-section');
   const nextAfterSovendus = sovendusSection?.nextElementSibling;
 
@@ -263,14 +279,14 @@ function initGenericCoregSponsorFlow(sponsorId, coregAnswerKey) {
   coregAnswers[sponsorId] = [];
 
   const allSections = document.querySelectorAll(`[id^="campaign-${sponsorId}"]`);
-  allSections.forEach((section, index) => {
-    const buttons = section.querySelectorAll('.sponsor-optin, .sponsor-next'); // <- ook zonder flow-next!
+  allSections.forEach(section => {
+    const buttons = section.querySelectorAll('.flow-next');
     buttons.forEach(button => {
       button.addEventListener('click', () => {
         const answerText = button.innerText.trim();
         coregAnswers[sponsorId].push(answerText);
 
-        // Let op: GEEN isPositive check meer!
+        if (!button.classList.contains('sponsor-next')) return;
 
         let nextStepId = '';
         button.classList.forEach(cls => {
@@ -285,25 +301,47 @@ function initGenericCoregSponsorFlow(sponsorId, coregAnswerKey) {
           const nextSection = document.getElementById(nextStepId);
           if (nextSection) {
             nextSection.style.display = 'block';
-            reloadImages(nextSection);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
+          } else {
+            handleGenericNextCoregSponsor(sponsorId, coregAnswerKey);
           }
+        } else {
+          handleGenericNextCoregSponsor(sponsorId, coregAnswerKey);
         }
 
-        // Als dit de laatste stap is → combineer antwoorden en ga naar volgende coreg
-        const isLastStep = index === allSections.length - 1;
-        if (isLastStep) {
-          handleGenericNextCoregSponsor(sponsorId, coregAnswerKey);
-        } else {
-          const next = allSections[index + 1];
-          if (next) {
-            next.style.display = 'block';
-            reloadImages(next);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
-        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
   });
+}
+
+function handleGenericNextCoregSponsor(sponsorId, coregAnswerKey) {
+  const combinedAnswer = coregAnswers[sponsorId].join(' - ');
+  sessionStorage.setItem(coregAnswerKey, combinedAnswer);
+
+  const currentCoregSection = document.querySelector(`.coreg-section[style*="display: block"]`);
+  const flowNextBtn = currentCoregSection?.querySelector('.flow-next');
+  flowNextBtn?.click();
+
+  setTimeout(() => checkIfLongFormShouldBeShown(), 100);
+}
+
+function checkIfLongFormShouldBeShown() {
+  const longFormSection = document.getElementById('long-form-section');
+  const alreadyShown = longFormSection?.getAttribute('data-displayed') === 'true';
+  const remainingCoregs = Array.from(document.querySelectorAll('.coreg-section'))
+    .filter(s => window.getComputedStyle(s).display !== 'none');
+
+  if (remainingCoregs.length > 0 || alreadyShown) return;
+
+  if (longFormCampaigns.length > 0) {
+    longFormSection.style.display = 'block';
+    longFormSection.setAttribute('data-displayed', 'true');
+    reloadImages(longFormSection);
+  } else {
+    const next = longFormSection?.nextElementSibling;
+    if (next) {
+      next.style.display = 'block';
+      reloadImages(next);
+    }
+  }
 }
