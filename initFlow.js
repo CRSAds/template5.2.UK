@@ -85,12 +85,10 @@ export default function initFlow() {
 
   longFormCampaigns.length = 0;
 
-  if (!window.location.hostname.includes("swipepages.com")) {
-    steps.forEach((el, i) => el.style.display = i === 0 ? 'block' : 'none');
-    document.querySelectorAll('.hide-on-live, #long-form-section').forEach(el => {
-      el.style.display = 'none';
-    });
-  }
+steps.forEach((el, i) => el.style.display = i === 0 ? 'block' : 'none');
+document.querySelectorAll('.hide-on-live, #long-form-section').forEach(el => {
+  el.style.display = 'none';
+});
 
   steps.forEach((step, stepIndex) => {
     // Handler voor .flow-next (NEE-knoppen en vervolgvragen/coreg-stappen)
