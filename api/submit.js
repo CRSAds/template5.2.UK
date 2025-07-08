@@ -34,7 +34,8 @@ export default async function handler(req, res) {
       f_1684_sub_id,
       f_1685_aff_id,
       f_1687_offer_id,
-      f_2047_EM_CO_sponsors
+      f_2047_EM_CO_sponsors,
+      f_2575_coreg_answer_dropdown
     } = req.body;
 
     console.log('📦 Long form data ontvangen (f_velden):', {
@@ -93,9 +94,8 @@ export default async function handler(req, res) {
       f_1684_sub_id: (f_1684_sub_id || '').toString().trim(),
       f_1685_aff_id: (f_1685_aff_id || '').toString().trim(),
       f_1687_offer_id: (f_1687_offer_id || '').toString().trim(),
-      f_2047_EM_CO_sponsors: (f_2047_EM_CO_sponsors || '').toString().trim()
-      f_2575_coreg_answer_dropdown: (req.body.f_2575_coreg_answer_dropdown || '').toString().trim() // <--- DIT IS DE FIX
-
+      f_2047_EM_CO_sponsors: (f_2047_EM_CO_sponsors || '').toString().trim(),
+      f_2575_coreg_answer_dropdown: (f_2575_coreg_answer_dropdown || '').toString().trim(),   // <-- exact als de rest
     });
 
     const response = await fetch('https://crsadvertising.databowl.com/api/v1/lead', {
