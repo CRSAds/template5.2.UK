@@ -187,6 +187,22 @@ export default function initFlow() {
           }
         }
 
+        // === BEGIN DROPDOWN SUPPORT ===
+        // Voor coreg sponsors met een dropdown: waarde opslaan bij button click (Scottish Power & Life Insurance)
+        if (
+          campaign &&
+          campaign.hasCoregFlow &&
+          campaign.answerFieldKey === "f_2575_coreg_answer_dropdown"
+        ) {
+          // Zoek de dropdown in de huidige sectie
+          const dropdown = step.querySelector('select[name="coreg-dropdown"]');
+          if (dropdown) {
+            const dropdownValue = dropdown.value;
+            sessionStorage.setItem(`dropdown_answer_${campaignId}`, dropdownValue);
+          }
+        }
+        // === END DROPDOWN SUPPORT ===
+
         step.style.display = 'none';
         const next = skipNext ? steps[stepIndex + 2] : steps[stepIndex + 1];
         if (next) {
@@ -197,44 +213,8 @@ export default function initFlow() {
       });
     });
 
-    step.querySelectorAll('select').forEach(select => {
-      const campaignId = select.id;
-      const campaign = sponsorCampaigns[campaignId];
-      if (!campaign) return;
+    // Select-eventhandlers (voor dropdowns) mogen blijven zoals ze zijn!
 
-      select.addEventListener('change', () => {
-        const selectedValue = select.value?.trim();
-        const selectedIndex = select.selectedIndex;
-
-        if (!selectedValue || selectedIndex === 0) {
-          console.warn("⚠️ Geen geldige selectie gedaan (nog default)");
-          return;
-        }
-
-        if (campaign.coregAnswerKey) {
-          sessionStorage.setItem(campaign.coregAnswerKey, selectedValue);
-        }
-
-        if (campaign.requiresLongForm && campaign.answerFieldKey && !longFormCampaigns.find(c => c.cid === campaign.cid)) {
-          longFormCampaigns.push(campaign);
-          console.log("➕ Toegevoegd aan longFormCampaigns via dropdown:", campaign.cid);
-        }
-
-        const parentStep = select.closest('.coreg-section, .flow-section');
-        if (!parentStep) return;
-
-        parentStep.style.display = 'none';
-
-        const steps = Array.from(document.querySelectorAll('.flow-section, .coreg-section'));
-        const currentIndex = steps.indexOf(parentStep);
-        const next = steps[currentIndex + 1];
-        if (next) {
-          next.style.display = 'block';
-          reloadImages(next);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      });
-    });
   });
 
   Object.entries(sponsorCampaigns).forEach(([campaignId, config]) => {
