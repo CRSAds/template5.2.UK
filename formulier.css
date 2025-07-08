@@ -1,3 +1,36 @@
+/* Verbeterde dropdown styling */
+.form-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #B8BFCB;
+  border-radius: 8px;
+  background: #fff url('data:image/svg+xml;utf8,<svg fill="gray" height="14" viewBox="0 0 20 20" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M5.293 7.293a1 1 0 0 1 1.414 0L10 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z"/></svg>') no-repeat right 12px center/18px 18px;
+  font-size: 1rem;
+  color: #1d273b;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+
+.form-group select:focus {
+  border-color: #4678FA;
+  box-shadow: 0 0 0 2px rgba(70, 120, 250, 0.1);
+}
+
+/* Verberg het standaard pijltje op Chrome/Safari/Edge */
+.form-group select::-ms-expand {
+  display: none;
+}
+.form-group select::-webkit-select-placeholder {
+  color: #B8BFCB;
+}
+
+/* Zorg dat placeholder (disabled/selected) grijs toont */
+.form-group select:invalid {
+  color: #B8BFCB;
+}
+
 form {
   max-width: 480px;
   margin: 0 auto;
