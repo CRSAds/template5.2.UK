@@ -264,14 +264,13 @@ function initGenericCoregSponsorFlow(sponsorId, coregAnswerKey) {
 
   const allSections = document.querySelectorAll(`[id^="campaign-${sponsorId}"]`);
   allSections.forEach((section, index) => {
-    const buttons = section.querySelectorAll('.flow-next');
+    const buttons = section.querySelectorAll('.sponsor-optin, .sponsor-next'); // <- ook zonder flow-next!
     buttons.forEach(button => {
       button.addEventListener('click', () => {
         const answerText = button.innerText.trim();
         coregAnswers[sponsorId].push(answerText);
 
-        const isPositive = button.classList.contains('sponsor-optin') || button.classList.contains('sponsor-next');
-        if (!isPositive) return;
+        // Let op: GEEN isPositive check meer!
 
         let nextStepId = '';
         button.classList.forEach(cls => {
