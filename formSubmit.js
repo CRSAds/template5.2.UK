@@ -172,30 +172,28 @@ export function setupFormSubmit() {
 
     const sponsorOptin = sessionStorage.getItem('sponsor_optin') || '';
 
-    if (Array.isArray(window.longFormCampaigns)) {
-      window.longFormCampaigns.forEach(campaign => {
-        if (campaign.tmcosponsor) return;
+if (Array.isArray(window.longFormCampaigns)) {
+  window.longFormCampaigns.forEach(campaign => {
+    if (campaign.tmcosponsor) return;
 
-        // === BEGIN DROPDOWN SUPPORT ===
-        // Nieuwe check: lead altijd sturen bij ingevulde optin óf (voor dropdown sponsors) als dropdown ingevuld is
-        let sendLead = false;
-        if (campaign.answerFieldKey) {
-          const dropdownValue = sessionStorage.getItem(`dropdown_answer_${campaign.campaignId || Object.keys(sponsorCampaigns).find(key => sponsorCampaigns[key].cid === campaign.cid)}`);
-          sendLead = !!dropdownValue;
-        } else {
-          const answer = sessionStorage.getItem(campaign.coregAnswerKey || '');
-          sendLead = !!answer && answer.toLowerCase().includes('ja');
-        }
-
-        if (sendLead) {
-          const payload = buildPayload(campaign);
-          fetchLead(payload);
-        } else {
-          console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid}`);
-        }
-        // === END DROPDOWN SUPPORT ===
-      });
+    let sendLead = false;
+    if (campaign.answerFieldKey) {
+      const dropdownValue = sessionStorage.getItem(`dropdown_answer_${campaign.campaignId || Object.keys(sponsorCampaigns).find(key => sponsorCampaigns[key].cid === campaign.cid)}`);
+      sendLead = !!dropdownValue;
+    } else {
+      const answer = (sessionStorage.getItem(campaign.coregAnswerKey || '') || '').toLowerCase();
+      sendLead = ['agree', 'yes'].some(word => answer.includes(word));
+      console.log(`Antwoord voor campaign ${campaign.cid}:`, answer);
     }
+
+    if (sendLead) {
+      const payload = buildPayload(campaign);
+      fetchLead(payload);
+    } else {
+      console.log(`⛔️ Lead NIET verstuurd voor ${campaign.cid}`);
+    }
+  });
+}
 
     const tmcosponsors = Object.values(sponsorCampaigns).filter(c => c.tmcosponsor);
     if (sponsorOptin) {
