@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
   const githubToken = process.env.github_token;
   const owner = 'CRSAds';            // ← pas aan naar jouw GitHub org/user
-  const repo = 'template5.2';         // ← jouw repo naam
+  const repo = 'template5.2.UK';         // ← jouw repo naam
   const branch = 'main';              // ← of 'master'
 
   const fileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
