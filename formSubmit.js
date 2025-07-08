@@ -82,10 +82,13 @@ export function buildPayload(campaign, options = { includeSponsors: true }) {
 
   // === BEGIN DROPDOWN SUPPORT ===
   // Alleen voor campagnes met answerFieldKey (Scottish Power & Life Insurance)
-  if (campaign.answerFieldKey) {
-    const dropdownAnswer = sessionStorage.getItem(`dropdown_answer_${campaign.campaignId || Object.keys(sponsorCampaigns).find(key => sponsorCampaigns[key].cid === campaign.cid)}`) || '';
-    payload[campaign.answerFieldKey] = dropdownAnswer;
-  }
+if (campaign.answerFieldKey) {
+  const campaignKey = Object.keys(sponsorCampaigns).find(key => sponsorCampaigns[key].cid === campaign.cid);
+  const dropdownKey = `dropdown_answer_${campaignKey}`;
+  const dropdownAnswer = sessionStorage.getItem(dropdownKey) || '';
+  payload[campaign.answerFieldKey] = dropdownAnswer;
+  console.log("Dropdown meegenomen voor", dropdownKey, "=", dropdownAnswer);
+}
   // === END DROPDOWN SUPPORT ===
 
   if (isShortForm && options.includeSponsors) {
