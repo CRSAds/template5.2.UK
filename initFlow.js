@@ -95,6 +95,9 @@ export default function initFlow() {
   steps.forEach((step, stepIndex) => {
     step.querySelectorAll('.flow-next').forEach(btn => {
       btn.addEventListener('click', () => {
+        // Debug
+        // console.log('Flow-next button click:', step.id, btn.innerText);
+
         const skipNext = btn.classList.contains('skip-next-section');
         const isFinalCoreg = btn.classList.contains('final-coreg');
 
@@ -112,14 +115,19 @@ export default function initFlow() {
         const campaignId = step.id?.startsWith('campaign-') ? step.id : null;
         const campaign = sponsorCampaigns[campaignId];
 
+        // Voor coreg, sla antwoord op bij .sponsor-next knop
         if (campaign?.coregAnswerKey && btn.classList.contains('sponsor-next')) {
           sessionStorage.setItem(campaign.coregAnswerKey, btn.innerText.trim());
         }
 
+        // Voor sponsor-optin (ja-knop) geldt dit NIET (daar geen return/stop!)
+
+        // Voorwaarde-optin-reset
         if (step.id === 'voorwaarden-section' && !btn.id) {
           sessionStorage.removeItem('sponsor_optin');
         }
 
+        // === Form validation/submit handling ===
         const form = step.querySelector('form');
         const isShortForm = form?.id === 'lead-form';
 
@@ -187,22 +195,21 @@ export default function initFlow() {
           }
         }
 
-        // === BEGIN DROPDOWN SUPPORT ===
-        // Voor coreg sponsors met een dropdown: waarde opslaan bij button click (Scottish Power & Life Insurance)
+        // === DROPDOWN SUPPORT: sla dropdown-antwoord altijd op, maar blokkeer flow niet! ===
         if (
           campaign &&
           campaign.hasCoregFlow &&
           campaign.answerFieldKey === "f_2575_coreg_answer_dropdown"
         ) {
-          // Zoek de dropdown in de huidige sectie
           const dropdown = step.querySelector('select[name="coreg-dropdown"]');
           if (dropdown) {
             const dropdownValue = dropdown.value;
             sessionStorage.setItem(`dropdown_answer_${campaignId}`, dropdownValue);
           }
         }
-        // === END DROPDOWN SUPPORT ===
+        // === EINDE DROPDOWN SUPPORT ===
 
+        // === DEZE CODE MOET ALTIJD WORDEN UITGEVOERD, GEEN RETURN TUSSENDOOR! ===
         step.style.display = 'none';
         const next = skipNext ? steps[stepIndex + 2] : steps[stepIndex + 1];
         if (next) {
@@ -213,8 +220,7 @@ export default function initFlow() {
       });
     });
 
-    // Select-eventhandlers (voor dropdowns) mogen blijven zoals ze zijn!
-
+    // De select-eventhandlers voor dropdowns mogen blijven zoals ze zijn!
   });
 
   Object.entries(sponsorCampaigns).forEach(([campaignId, config]) => {
@@ -230,13 +236,13 @@ export default function initFlow() {
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          console.log("👀 Sovendus-sectie in beeld — setup en timer gestart");
+          // console.log("👀 Sovendus-sectie in beeld — setup en timer gestart");
           obs.unobserve(entry.target);
 
           setupSovendus();
 
           setTimeout(() => {
-            console.log("⏱️ Timer afgelopen — doorgaan naar volgende sectie na Sovendus");
+            // console.log("⏱️ Timer afgelopen — doorgaan naar volgende sectie na Sovendus");
             sovendusSection.style.display = 'none';
             nextAfterSovendus.style.display = 'block';
             reloadImages(nextAfterSovendus);
