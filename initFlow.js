@@ -1,4 +1,4 @@
-vimport { reloadImages } from './imageFix.js';
+import { reloadImages } from './imageFix.js';
 import { fetchLead, buildPayload } from './formSubmit.js';
 import sponsorCampaigns from './sponsorCampaigns.js';
 import setupSovendus from './setupSovendus.js';
@@ -74,6 +74,7 @@ export default function initFlow() {
     longFormSection.setAttribute('data-displayed', 'false');
   }
 
+  // --------- ALTIJD alleen de eerste sectie tonen bij pageload ----------
   const steps = Array.from(document.querySelectorAll('.flow-section, .coreg-section'))
     .filter(step => {
       if (statusParam === 'online') {
@@ -83,12 +84,13 @@ export default function initFlow() {
       return false;
     });
 
-  longFormCampaigns.length = 0;
+  // Verberg alles behalve de eerste stap:
+  steps.forEach((el, i) => el.style.display = i === 0 ? 'block' : 'none');
+  document.querySelectorAll('.hide-on-live, #long-form-section').forEach(el => {
+    el.style.display = 'none';
+  });
 
-steps.forEach((el, i) => el.style.display = i === 0 ? 'block' : 'none');
-document.querySelectorAll('.hide-on-live, #long-form-section').forEach(el => {
-  el.style.display = 'none';
-});
+  longFormCampaigns.length = 0;
 
   steps.forEach((step, stepIndex) => {
     // Handler voor .flow-next (NEE-knoppen en vervolgvragen/coreg-stappen)
@@ -250,13 +252,11 @@ document.querySelectorAll('.hide-on-live, #long-form-section').forEach(el => {
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // console.log("👀 Sovendus-sectie in beeld — setup en timer gestart");
           obs.unobserve(entry.target);
 
           setupSovendus();
 
           setTimeout(() => {
-            // console.log("⏱️ Timer afgelopen — doorgaan naar volgende sectie na Sovendus");
             sovendusSection.style.display = 'none';
             nextAfterSovendus.style.display = 'block';
             reloadImages(nextAfterSovendus);
